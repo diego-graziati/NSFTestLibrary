@@ -1,8 +1,8 @@
-#include <types/test_category_type.h>
-#include <test_destroy.h>
+#include <types/nsftl_test_category_type.h>
+#include <nsftl_test_destroy.h>
 #include <stdlib.h>
 
-void mytest_destroy_test_category (mytest_test_category_t* test_category)
+void mynsftl_test_destroy_test_category (nsftl_test_category_t* test_category)
 {
     if (test_category == NULL || *test_category == NULL) return;
 
@@ -32,7 +32,7 @@ void mytest_destroy_test_category (mytest_test_category_t* test_category)
     *test_category = NULL;
 }
 
-void mytest_destroy_test_unit (mytest_test_unit_t* test_unit)
+void mynsftl_test_destroy_test_unit (nsftl_test_unit_t* test_unit)
 {
     if (test_unit == NULL || *test_unit == NULL) return;
 
@@ -41,7 +41,7 @@ void mytest_destroy_test_unit (mytest_test_unit_t* test_unit)
     (*test_unit) = NULL;
 }
 
-void mytest_destroy_test_report (mytest_report_type_t* test_report)
+void mynsftl_test_destroy_test_report (nsftl_report_type_t* test_report)
 {
     if (test_report == NULL || *test_report == NULL) return;
 

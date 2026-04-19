@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(MyTest LANGUAGES C CXX)
+project(NSFTestLibary LANGUAGES C CXX)
 include(CTest)
 
 #Setting gcc sanitizers for both C and CPP
@@ -14,15 +14,15 @@ if(CPPCHECK_PATH)
 endif()
 
 #Library creation
-add_library(mytest STATIC
-    src/test_subscriber.c
-    src/test_init.c
-    src/test_execute.c
-    src/test_destroy.c
-    src/test_utils.c
+add_library(nsftl STATIC
+    src/nsftl_test_subscriber.c
+    src/nsftl_test_init.c
+    src/nsftl_test_execute.c
+    src/nsftl_test_destroy.c
+    src/nsftl_test_utils.c
 )
 
-target_include_directories(mytest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
+target_include_directories(nsftl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
 
 #Compiler sanitizers
 ## GCC
@@ -32,8 +32,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND ENABLE_SANITIZERS)
     message(STATUS "Sanitizers are active (Address & Undefined)")
     set(SAN_FLAGS -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer)
 
-    target_compile_options(mytest PUBLIC ${SAN_FLAGS})
-    target_link_options(mytest PUBLIC ${SAN_FLAGS})
+    target_compile_options(nsftl PUBLIC ${SAN_FLAGS})
+    target_link_options(nsftl PUBLIC ${SAN_FLAGS})
 else()
     message(STATUS "Sanitizers NOT ACTIVE")
 endif()
@@ -48,7 +48,7 @@ add_executable(test_main
     "test/src/tests/Test_execute.cpp"
 )
 
-target_link_libraries(test_main PRIVATE mytest)
+target_link_libraries(test_main PRIVATE nsftl)
 target_include_directories(test_main PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/test/inc")
 
 #Setting ctest
@@ -64,7 +64,7 @@ endif()
 find_package(Doxygen REQUIRED)
 
 if(DOXYGEN_FOUND)
-    set(DOXYGEN_PROJECT_NAME "MyTest")
+    set(DOXYGEN_PROJECT_NAME "Not So Fabolous Test Library")
     set(DOXYGEN_GENERATE_HTML YES)
     set(DOXYGEN_GENERATE_LATEX YES)
     set(DOXYGEN_LATEX_OUTPUT "latex")

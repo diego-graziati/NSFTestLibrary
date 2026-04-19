@@ -1,17 +1,17 @@
 #include <Test.hpp>
-#include <test_subscriber.h>
-#include <test_init.h>
-#include <test_execute.h>
-#include <test_destroy.h>
-#include <test_utils.h>
-#include <types/test_category_type.h>
-#include <miscellaneous/test_statuses.h>
+#include <nsftl_test_subscriber.h>
+#include <nsftl_test_init.h>
+#include <nsftl_test_execute.h>
+#include <nsftl_test_destroy.h>
+#include <nsftl_test_utils.h>
+#include <types/nsftl_test_category_type.h>
+#include <miscellaneous/nsftl_test_statuses.h>
 #include <defs.hpp>
 #include <iostream>
 
 void Test::execute_tests()
 {
-    mytest_report_type_t report = nullptr;
+    nsftl_report_type_t report = nullptr;
     std::cout << "### TEST:INIT CATEGORY" << std::endl;
     this->init_category(report);
     this->print_test_report(report);
@@ -83,7 +83,7 @@ void Test::execute_tests()
     this->destroy_report(report);
 }
 
-void Test::print_test_report(mytest_report_type_t report)
+void Test::print_test_report(nsftl_report_type_t report)
 {
     if (report == NULL || report->message == NULL)
     {
@@ -105,21 +105,21 @@ void Test::print_test_report(mytest_report_type_t report)
     }
 }
 
-void Test::destroy_report(mytest_report_type_t& report)
+void Test::destroy_report(nsftl_report_type_t& report)
 {
-    mytest_destroy_test_report(&report);
+    mynsftl_test_destroy_test_report(&report);
     report = nullptr;
 }
 
-void Test::test_callback_fn(mytest_report_type_t* report, uint32_t index)
+void Test::test_callback_fn(nsftl_report_type_t* report, uint32_t index)
 {
     std::string report_message = "Report test";
     mytest_write_report(report, report_message.c_str(), report_message.length(), test::TEST_SUCCEDED);
 }
 
-void Test::multiple_tests_callback_fn(mytest_report_type_t* report, uint32_t index)
+void Test::multiple_tests_callback_fn(nsftl_report_type_t* report, uint32_t index)
 {
-    char report_message[MYTEST_TEST_REPORT_MAX_MESSAGE_LENGTH] = {0};
+    char report_message[NSFTL_TEST_REPORT_MAX_MESSAGE_LENGTH] = {0};
     std::snprintf(report_message, std::string("Report of test n°: ").length() + 2, "Report of test n°: %u", index);
     mytest_write_report(report, report_message, std::string(report_message).length(), test::TEST_SUCCEDED);
 }

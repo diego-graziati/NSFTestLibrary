@@ -1,4 +1,4 @@
-# MyTest Library
+# The Not So Fabolous Test Library (NSFTestLibrary)
 
 This library started as a little uni project developed for the following reasons:
 - wanting to put software engeneering skills to use (and mainly understanding if I was able to develop any of those skills);
