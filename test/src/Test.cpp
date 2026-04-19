@@ -1,145 +1,125 @@
 #include <Test.hpp>
 #include <test_subscriber.h>
+#include <test_init.h>
+#include <test_execute.h>
+#include <test_destroy.h>
+#include <test_utils.h>
 #include <types/test_category_type.h>
-#include <cstring>
+#include <miscellaneous/test_statuses.h>
 #include <defs.hpp>
 #include <iostream>
 
 void Test::execute_tests()
 {
-    mytest_report_type report;
+    mytest_report_type_t report = nullptr;
     std::cout << "### TEST:INIT CATEGORY" << std::endl;
-    report = Test::init_category();
-    print_test_report(report);
-    std::cout << "### TEST:SUBSCRIBE SINGLE TEST UNIT" << std::endl;
-    report = Test::subscribe_single_test_unit();
-    print_test_report(report);
-    std::cout << "### TEST:EXECUTE CATEGORY WITH SINGLE UNIT" << std::endl;
-    report = Test::execute_category_with_single_unit();
-    print_test_report(report);
+    this->init_category(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:INIT MULTIPLE CATEGORIES" << std::endl;
+    this->init_multiple_categories(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:INIT TEST UNIT" << std::endl;
+    this->init_test_unit(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:INIT MULTIPLE TEST UNITS" << std::endl;
+    this->init_multiple_test_units(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:SUBMIT TEST TO SINGLE TEST UNIT" << std::endl;
+    this->submit_test_to_single_test_unit(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:SUBMIT TEST TO MULTIPLE TEST UNITS" << std::endl;
+    this->submit_test_to_multiple_test_units(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:SUBSCRIBE SINGLE TEST UNIT TO SINGLE TEST CATEGORY" << std::endl;
+    this->subscribe_single_test_unit(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:SUBSCRIBE SINGLE TEST UNIT TO MULTIPLE TEST CATEGORIES" << std::endl;
+    this->subscribe_single_test_unit_to_multiple_categories(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:SUBSCRIBE MULTIPLE TEST UNITS TO MULTIPLE TEST CATEGORIES" << std::endl;
+    this->subscribe_multiple_test_units_to_multiple_categories(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:EXECUTE SINGLE TEST UNIT FROM SINGLE TEST CATEGORY" << std::endl;
+    this->execute_category_with_single_unit(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:SUBSCRIBE MULTIPLE TEST UNITS TO SINGLE TEST CATEGORY" << std::endl;
+    this->subscribe_multiple_test_units(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:EXECUTE MULTIPLE TEST UNITS FROM SINGLE TEST CATEGORY" << std::endl;
+    this->execute_category_with_multiple_units(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:EXECUTE SINGLE TEST UNIT FROM MULTIPLE TEST CATEGORIES" << std::endl;
+    this->execute_multiple_categories_with_single_unit(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
+
+    std::cout << "### TEST:EXECUTE MULTIPLE TEST UNITS FROM MULTIPLE TEST CATEGORIES" << std::endl;
+    this->execute_multiple_categories_with_multiple_units(report);
+    this->print_test_report(report);
+    this->destroy_report(report);
 }
 
-mytest_report_type Test::init_category()
+void Test::print_test_report(mytest_report_type_t report)
 {
-    mytest_test_category* test_category = nullptr;
-    mytest_init_test_category(&test_category);
-    const char* report_message;
-
-    if (test_category == nullptr)
+    if (report == NULL || report->message == NULL)
     {
-        report_message = "test_category is nullptr";
-        mytest_destroy_test_category(test_category);
-        return mytest_write_report(report_message, strlen(report_message), test::TEST_FAILED);
-    }
-    if (test_category->tests == nullptr)
-    {
-        report_message = "test_category->tests is nullptr";
-        mytest_destroy_test_category(test_category);
-        return mytest_write_report(report_message, strlen(report_message), test::TEST_FAILED);
-    }
-    if (test_category->reports == nullptr)
-    {
-        report_message = "test_category->reports is nullptr";
-        mytest_destroy_test_category(test_category);
-        return mytest_write_report(report_message, strlen(report_message), test::TEST_FAILED);
-    }
-    if (test_category->capacity != 10U)
-    {
-        report_message = "test_category->capacity != 10U";
-        mytest_destroy_test_category(test_category);
-        return mytest_write_report(report_message, strlen(report_message), test::TEST_FAILED);
-    }
-    if (test_category->size != 0U)
-    {
-        report_message = "test_category->size != 0U";
-        mytest_destroy_test_category(test_category);
-        return mytest_write_report(report_message, strlen(report_message), test::TEST_FAILED);
+        std::cout << "\tUnable to read null" << std::endl;
+        return;
     }
 
-    mytest_destroy_test_category(test_category);
-
-    report_message = "test succeded";
-    return mytest_write_report(report_message, strlen(report_message), test::TEST_SUCCEDED);
-}
-
-mytest_report_type Test::subscribe_single_test_unit()
-{
-    mytest_test_category* test_category = nullptr;
-    mytest_init_test_category(&test_category);
-    const char* report_message;
-
-    mytest_test_unit test_unit = {
-        .test_name = "simple test unit",
-        .test_callback_fn = Test::test_callback_fn
-    };
-
-    mytest_subscribe_test_unit(test_category, &test_unit);
-
-    if (test_category->size != 1)
+    if (report->status == test::TEST_SUCCEDED)
     {
-        report_message = "test_category->size != 1";
-        mytest_destroy_test_category(test_category);
-        return mytest_write_report(report_message, strlen(report_message), test::TEST_FAILED);
+        std::cout << test::ASCII_TERMINAL_RESET << "\t" << test::ASCII_TERMINAL_GREEN_COLOR << report->message << test::ASCII_TERMINAL_RESET << std::endl;
     }
-
-    if (strcmp(test_category->tests[0].test_name, "simple test unit"))
+    else if (report->status == test::TEST_FAILED)
     {
-        report_message = "test_category->tests[0].test_name and \"simple test unit\" aren't equal strings, thus implying the test unit is different";
-        mytest_destroy_test_category(test_category);
-        return mytest_write_report(report_message, strlen(report_message), test::TEST_FAILED);
+        std::cout << test::ASCII_TERMINAL_RESET << "\t" << test::ASCII_TERMINAL_RED_COLOR << report->message << test::ASCII_TERMINAL_RESET << std::endl;
     }
-
-    mytest_destroy_test_category(test_category);
-
-    report_message = "test succeded";
-    return mytest_write_report(report_message, strlen(report_message), test::TEST_SUCCEDED);
-}
-
-mytest_report_type Test::execute_category_with_single_unit()
-{
-    mytest_test_category* test_category = nullptr;
-    mytest_init_test_category(&test_category);
-    const char* report_message;
-
-    mytest_test_unit test_unit = {
-        .test_name = "simple test unit",
-        .test_callback_fn = Test::test_callback_fn
-    };
-
-    
-    mytest_subscribe_test_unit(test_category, &test_unit);
-
-    mytest_execute_category_tests(test_category);
-
-    if (strcmp(test_category->reports[0].message, "Report test"))
+    else
     {
-        report_message = "test_category->reports[0].message and \"Report test\" aren't equal strings, thus implying the category execution didn't happen";
-        mytest_destroy_test_category(test_category);
-        return mytest_write_report(report_message, strlen(report_message), test::TEST_FAILED);
-    }
-
-    mytest_destroy_test_category(test_category);
-
-    report_message = "test succeded";
-    return mytest_write_report(report_message, strlen(report_message), test::TEST_SUCCEDED);
-}
-
-void Test::print_test_report(mytest_report_type& report)
-{
-    if (report.status == test::TEST_SUCCEDED)
-    {
-        std::cout << test::ASCII_TERMINAL_GREEN_COLOR << "This test succeded:" << test::ASCII_TERMINAL_RESET << std::endl;
-        std::cout << "\t" << report.message << std::endl;
-    } 
-    else 
-    {
-        std::cout << test::ASCII_TERMINAL_RED_COLOR << "This test failed:" << test::ASCII_TERMINAL_RESET << std::endl;
-        std::cout << "\t" << report.message << std::endl;
+        std::cout << "\t" << report->message << std::endl;
     }
 }
 
-void Test::test_callback_fn(mytest_report_type* report)
+void Test::destroy_report(mytest_report_type_t& report)
 {
-    const char* report_message = "Report test";
-    (*report) = mytest_write_report(report_message, strlen(report_message), test::TEST_SUCCEDED);
+    mytest_destroy_test_report(&report);
+    report = nullptr;
+}
+
+void Test::test_callback_fn(mytest_report_type_t* report, uint32_t index)
+{
+    std::string report_message = "Report test";
+    mytest_write_report(report, report_message.c_str(), report_message.length(), test::TEST_SUCCEDED);
+}
+
+void Test::multiple_tests_callback_fn(mytest_report_type_t* report, uint32_t index)
+{
+    char report_message[MYTEST_TEST_REPORT_MAX_MESSAGE_LENGTH] = {0};
+    std::snprintf(report_message, std::string("Report of test n°: ").length() + 2, "Report of test n°: %u", index);
+    mytest_write_report(report, report_message, std::string(report_message).length(), test::TEST_SUCCEDED);
 }

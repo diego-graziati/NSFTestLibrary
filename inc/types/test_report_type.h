@@ -14,6 +14,8 @@ typedef struct mytest_report_type
 }
 mytest_report_type;
 
+typedef mytest_report_type* mytest_report_type_t;
+
 #ifdef __cplusplus
 }
 #endif

@@ -9,12 +9,15 @@ extern "C" {
 
 typedef struct mytest_test_category 
 {
-    mytest_test_unit* tests;
-    mytest_report_type* reports;
+    const char category_name[MYTEST_TEST_CATEGORY_MAX_NAME_LENGTH + 1];
+    mytest_test_unit_t tests;
+    mytest_report_type_t reports;
     uint32_t capacity;
     uint32_t size;
 }
 mytest_test_category;
+
+typedef mytest_test_category* mytest_test_category_t;
 
 #ifdef __cplusplus
 }

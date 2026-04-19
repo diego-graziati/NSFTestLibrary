@@ -1,11 +1,15 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace test
 {
-    const int TEST_SUCCEDED = 0;
-    const int TEST_FAILED = 1;
+    inline constexpr uint32_t TEST_SUCCEDED = 0U;
+    inline constexpr uint32_t TEST_FAILED = 1U;
+    inline constexpr uint32_t MAX_TEST_UNITS_ARRAY_LENGTH = 30U;
+    inline constexpr uint32_t MAX_TEST_CATEGORIES_ARRAY_LENGTH = test::MAX_TEST_UNITS_ARRAY_LENGTH;
 
-    const char* ASCII_TERMINAL_RED_COLOR = "\e[1;31m";
-    const char* ASCII_TERMINAL_GREEN_COLOR = "\e[0;32m";
-    const char* ASCII_TERMINAL_RESET = "\e[0m";
+    inline constexpr const char* ASCII_TERMINAL_RED_COLOR = "\e[1;31m";
+    inline constexpr const char* ASCII_TERMINAL_GREEN_COLOR = "\e[0;32m";
+    inline constexpr const char* ASCII_TERMINAL_RESET = "\e[0m";
 };
