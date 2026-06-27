@@ -1,0 +1,46 @@
+name: Production Release (Manual CD)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Quality-Control:
+    uses: ./.github/workflows/ci.yml
+
+  Library-Compilation:
+    needs: Quality-Control
+    name: Release per ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: CMake Configuration (Production)
+      run: >
+        cmake -B ${{ github.workspace }}/build 
+        -DCMAKE_BUILD_TYPE=Release
+        -DBUILD_TESTING=OFF
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+
+    - name: Build Library
+      run: cmake --build ${{ github.workspace }}/build --config Release
+
+    - name: Realease File Isolation
+      run: cmake --install ${{ github.workspace }}/build --prefix ${{ github.workspace }}/output_package --config Release
+
+    - name: Upload Library Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NSFTL-Release-${{ matrix.os }}
+        path: ${{ github.workspace }}/output_package/
