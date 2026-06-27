@@ -5,11 +5,11 @@ on:
     branches: [ "master", "dev" ]
   pull_request:
     branches: [ "master" ]
-  workflow_call: # Permette al workflow di Release di chiamare questo controllo di sicurezza
+  workflow_call: 
 
 jobs:
   build-and-test:
-    name: Test su ${{ matrix.os }}
+    name: Test using ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -26,7 +26,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Configurazione CMake (Sviluppo)
+    - name: CMake Configuration (Development)
       run: >
         cmake -B ${{ github.workspace }}/build 
         -DCMAKE_BUILD_TYPE=Debug 
@@ -35,7 +35,7 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
 
-    - name: Build Progetto
+    - name: Project Build
       run: cmake --build ${{ github.workspace }}/build --config Debug
 
     # Esecuzione dei test automatici tramite CTest
