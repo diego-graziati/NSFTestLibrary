@@ -1,0 +1,46 @@
+name: Continuous Integration (Debug & Test)
+
+on:
+  push:
+    branches: [ "master", "dev" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_call: # Permette al workflow di Release di chiamare questo controllo di sicurezza
+
+jobs:
+  build-and-test:
+    name: Test su ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configurazione CMake (Sviluppo)
+      run: >
+        cmake -B ${{ github.workspace }}/build 
+        -DCMAKE_BUILD_TYPE=Debug 
+        -DBUILD_TESTING=ON 
+        -DENABLE_SANITIZERS=ON
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+
+    - name: Build Progetto
+      run: cmake --build ${{ github.workspace }}/build --config Debug
+
+    # Esecuzione dei test automatici tramite CTest
+    - name: Run CTest
+      working-directory: ${{ github.workspace }}/build
+      env:
+        ASAN_OPTIONS: 'halt_on_error=1:abort_on_error=1'
+      run: ctest --output-on-failure -C Debug
