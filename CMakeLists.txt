@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.10)
 project(NSFTestLibary LANGUAGES C CXX)
 include(CTest)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 #Setting gcc sanitizers for both C and CPP
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options(-fanalyzer)
