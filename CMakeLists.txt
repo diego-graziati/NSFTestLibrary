@@ -26,7 +26,7 @@ set(BASE_SOURCES
 if(WIN32)
     set(TIME_SOURCES src/windows/nsftl_time.c)
     message(STATUS "Configurazione target: Windows")
-elif(APPLE)
+elseif(APPLE)
     set(TIME_SOURCES src/apple/nsftl_time.c)
     message(STATUS "Configurazione target: macOS")
 else()
