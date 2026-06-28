@@ -27,7 +27,7 @@ jobs:
 
     - name: Set up MSVC Developer Command Prompt
       if: matrix.os == 'windows-latest'
-      uses: ilammy/msvc-dev-cmd@1
+      uses: ilammy/msvc-dev-cmd@v1
 
     - name: CMake Configuration (Production)
       run: >
