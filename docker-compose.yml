@@ -1,0 +1,16 @@
+services:
+  # Servizio 1: Lancia i test con i sanitizer e valgrind
+  run-tests:
+    build:
+      context: .
+      target: base_test # Si ferma allo stage 1 (niente Doxygen installato inutilmente)
+    volumes:
+      - .:/workspace # Monta la tua cartella così vedi i report dei test localmente
+
+  # Servizio 2: Genera la documentazione e la salva sul tuo PC
+  generate-docs:
+    build:
+      context: .
+      target: doc_builder # Va fino allo stage 2 installando Doxygen e Graphviz
+    volumes:
+      - .:/workspace # Mappa la cartella per sputare fuori le cartelle /docs/ sul tuo PC
