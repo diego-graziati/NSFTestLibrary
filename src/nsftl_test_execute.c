@@ -1,10 +1,18 @@
 #include <types/nsftl_test_category_type.h>
 #include <miscellaneous/nsftl_test_statuses.h>
 #include <nsftl_test_execute.h>
+#include <nsftl_test_destroy.h>
 #include <stdlib.h>
 #include <string.h>
 
-uint32_t mynsftl_test_execute_category_test (nsftl_test_category_t test_category, uint32_t index)
+/**
+ * @brief 
+ * 
+ * @param test_category 
+ * @param index 
+ * @return nsftl_status_t 
+ */
+nsftl_status_t nsftl_execute_category_test (nsftl_test_category_t test_category, nsftl_index_t index)
 {
     if (test_category == NULL)
     {
@@ -21,7 +29,7 @@ uint32_t mynsftl_test_execute_category_test (nsftl_test_category_t test_category
         return NSFTL_TEST_INDEX_BIGGER_THAN_CATEGORY_SIZE;
     }
 
-    nsftl_report_type_t test_report = NULL;
+    nsftl_test_report_t test_report = NULL;
     test_category->tests[index].test_callback_fn(&test_report, index);
 
     if (test_category->reports[index].message != NULL)
@@ -32,48 +40,42 @@ uint32_t mynsftl_test_execute_category_test (nsftl_test_category_t test_category
 
     if (test_report == NULL || test_report->message == NULL)
     {
-        char* temp_report_message = (char*) malloc(1 * sizeof(char));
+        char* temp_report_message = strdup("");
         if (temp_report_message == NULL)
         {
-            if (test_report != NULL)
-            {
-                free((void*) test_report);
-                test_report = NULL;
-            }
+            nsftl_destroy_test_report(&test_report);
 
             return NSFTL_MEMORY_ALLOCATION_FAILED_MEMORY_INSUFFICIENT;
         }
 
-        memset((void*) temp_report_message, 0, 1);
         test_category->reports[index].message = (const char*) temp_report_message;
     }
     else
     {
-        if (strnlen(test_report->message, NSFTL_TEST_REPORT_MAX_MESSAGE_LENGTH) == (NSFTL_TEST_REPORT_MAX_MESSAGE_LENGTH + 1))
+        size_t msg_len = strnlen(test_report->message, NSFTL_TEST_REPORT_MAX_MESSAGE_LENGTH);
+        if (msg_len >= NSFTL_TEST_REPORT_MAX_MESSAGE_LENGTH)
         {
-            free((void*) test_report);
-            test_report = NULL;
+            nsftl_destroy_test_report(&test_report);
+
             return NSFTL_REPORT_MESSAGE_IS_TOO_LONG;
         }
 
-        test_category->reports[index].message = (const char*) malloc((strlen(test_report->message) + 1) * sizeof(const char));
-        if (test_category->reports[index].message == NULL)
+        char* temp_report_message = (char*) malloc((msg_len + 1) * sizeof(char));
+        if (temp_report_message == NULL)
         {
-            free((void*) test_report->message);
-            test_report->message = NULL;
-            free((void*) test_report);
-            test_report = NULL;
+            nsftl_destroy_test_report(&test_report);
+
             return NSFTL_MEMORY_ALLOCATION_FAILED_MEMORY_INSUFFICIENT;
         }
 
-        memset((void*) test_category->reports[index].message, 0, strnlen(test_report->message, NSFTL_TEST_REPORT_MAX_MESSAGE_LENGTH) + 1);
-        strncpy((char*) test_category->reports[index].message, test_report->message, strnlen(test_report->message, NSFTL_TEST_REPORT_MAX_MESSAGE_LENGTH));
+        memset((void*) temp_report_message, 0, msg_len + 1);
+        strncpy(temp_report_message, test_report->message, msg_len);
+        temp_report_message[msg_len] = '\0';
+
+        test_category->reports[index].message = (const char*) temp_report_message;
     }
 
-
-    free((void*) test_report->message);
-    test_report->message = NULL;
-    free((void*) test_report);
-    test_report = NULL;
+    nsftl_destroy_test_report(&test_report);
+    
     return NSFTL_SUCCESS;
 }

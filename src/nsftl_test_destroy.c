@@ -2,11 +2,16 @@
 #include <nsftl_test_destroy.h>
 #include <stdlib.h>
 
-void mynsftl_test_destroy_test_category (nsftl_test_category_t* test_category)
+/**
+ * @brief 
+ * 
+ * @param test_category 
+ */
+void nsftl_destroy_test_category (nsftl_test_category_t* test_category)
 {
     if (test_category == NULL || *test_category == NULL) return;
 
-    for (uint32_t i = 0; i < (*test_category)->size; i++)
+    for (nsftl_index_t i = 0; i < (*test_category)->size; i++)
     {
         (*test_category)->tests[i].test_callback_fn = NULL;
         if ((*test_category)->reports[i].message != NULL)
@@ -32,7 +37,12 @@ void mynsftl_test_destroy_test_category (nsftl_test_category_t* test_category)
     *test_category = NULL;
 }
 
-void mynsftl_test_destroy_test_unit (nsftl_test_unit_t* test_unit)
+/**
+ * @brief 
+ * 
+ * @param test_unit 
+ */
+void nsftl_destroy_test_unit (nsftl_test_unit_t* test_unit)
 {
     if (test_unit == NULL || *test_unit == NULL) return;
 
@@ -41,7 +51,12 @@ void mynsftl_test_destroy_test_unit (nsftl_test_unit_t* test_unit)
     (*test_unit) = NULL;
 }
 
-void mynsftl_test_destroy_test_report (nsftl_report_type_t* test_report)
+/**
+ * @brief 
+ * 
+ * @param test_report 
+ */
+void nsftl_destroy_test_report (nsftl_test_report_t* test_report)
 {
     if (test_report == NULL || *test_report == NULL) return;
 
@@ -49,6 +64,18 @@ void mynsftl_test_destroy_test_report (nsftl_report_type_t* test_report)
     {
         free((void*) (*test_report)->message);
         (*test_report)->message = NULL;
+    }
+
+    if ((*test_report)->start_time != NULL)
+    {
+        free((void*) (*test_report)->start_time);
+        (*test_report)->start_time = NULL;
+    }
+
+    if ((*test_report)->end_time != NULL)
+    {
+        free((void*) (*test_report)->end_time);
+        (*test_report)->end_time = NULL;
     }
 
     free(*test_report);

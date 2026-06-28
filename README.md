@@ -19,3 +19,20 @@ and its status;
 This library follows a simple design: 
 
 the **inc/** and **src/** folders contain respectively the library's interfaces and implementations, while the **test/** folder contains a simple test suite meant to both test the library (the "test library's tests" ;D) and show a way you could utilize it.
+
+## Documentation
+API Documentation (starting from the root directory after the repository's clone):
+```bash
+cd build/
+cmake --build  . --target api_docs
+```
+
+Complete Documentation (starting from the root directory after the repository's clone):
+```bash
+cd build/
+cmake --build  . --target complete_docs
+```
+
+## Considerations
+This library, while aiming to be platform independent, has been tested only on Linux Ubuntu as of now. It should still be platform independent and easily
+portable to Windows and Mac (aside from the library tests, but these can still be fixed and it's something I'll be working on).

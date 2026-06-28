@@ -1,8 +1,11 @@
 /**
 
-@defgroup mytest_core MY TEST CORE COMPONENTS
-@brief This group represents the library's core components. Inside it there are all the functions needed to use the library correctly.
-@defgroup mytest_types MY TEST TEST UNIT TYPE
-@brief This group represents the library's data structures.
+@defgroup nsftl_core NSFTL CORE COMPONENTS
+@details
+This group represents the library's core components. Inside it there are all the functions needed to use the library correctly.
+
+@defgroup nsftl_types NSFTL UNIT TYPES
+@details
+This group represents the library's data structures.
 
 */

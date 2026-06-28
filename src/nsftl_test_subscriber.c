@@ -4,18 +4,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-uint32_t mytest_subscribe_test_unit (nsftl_test_category_t test_category, nsftl_test_unit_t* test_unit)
+/**
+ * @brief 
+ * 
+ * @param test_category 
+ * @param test_unit 
+ * @return nsftl_status_t 
+ */
+nsftl_status_t nsftl_subscribe_test_unit (nsftl_test_category_t test_category, nsftl_test_unit_t* test_unit)
 {
     if (test_category->size >= test_category->capacity)
     {
-        uint32_t new_capacity = test_category->capacity + 10U;
+        nsftl_capacity_t new_capacity = test_category->capacity + 10U;
         nsftl_test_unit_t temp_tests = (nsftl_test_unit_t) malloc(new_capacity * sizeof(*test_category->tests));
         if (temp_tests == NULL)
         {
             return NSFTL_MEMORY_ALLOCATION_FAILED_MEMORY_INSUFFICIENT;
         }
 
-        nsftl_report_type_t temp_reports = (nsftl_report_type_t) malloc(new_capacity * sizeof(*test_category->reports));
+        nsftl_test_report_t temp_reports = (nsftl_test_report_t) malloc(new_capacity * sizeof(*test_category->reports));
         if (temp_reports == NULL)
         {
             free((void*) temp_tests);

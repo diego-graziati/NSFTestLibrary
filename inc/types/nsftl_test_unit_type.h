@@ -9,32 +9,50 @@ extern "C" {
 #endif
 
 /**
- * @addtogroup mytest_types
+ * @addtogroup nsftl_types
  * @{
  */
 /**
+ * @details
+ * A test unit is intended as a completely independent unit of testing, 'thus implying that one failing shouldn't impede the execution of the next test unit.
+ * What test a test unit must run is decided entirely by the programmer via the test_callback_fn, often referred to as test unit's test function, since it
+ * contains the actual test's code.
+ * A test unit's execution must always produce a test report.
+ * 
  * @author Diego Graziati
+ * 
  * @brief This structure represents a single testing unit.
+ * 
  * @warning Do not initialize this data structure by hand. See the "See also" section to learn what to use to properly initialize the data structure.
- * @see mynsftl_test_init_test_unit to initialize this data structure.
- * @see mytest_submit_test_to_test_unit to link a test function to the test unit.
+ * 
+ * @see nsftl_init_test_unit to initialize this data structure.
+ * @see nsftl_submit_test_to_test_unit to link a test function to the test unit.
  */
-typedef struct nsftl_test_unit
+struct nsftl_test_unit
 {
     /**
      * @author Diego Graziati
+     * 
      * @brief This parameter is the name of the test unit. It isn't necessarily unique.
+     * 
+     * @note The test_name length is fixed at NSFTL_TEST_UNIT_MAX_NAME_LENGTH writable characters plus one index left for the \0.
      */
     const char test_name[NSFTL_TEST_UNIT_MAX_NAME_LENGTH + 1];
     /**
      * @author Diego Graziati
+     * 
      * @brief This parameter is the test unit actual test function.
-     * @see mytest_submit_test_to_test_unit to link a test function to the test unit.
+     * 
+     * @see nsftl_submit_test_to_test_unit to link a test function to the test unit.
      */
-    void (*test_callback_fn)(nsftl_report_type_t* test_report, uint32_t test_unit_index);
-}
-nsftl_test_unit;
+    void (*test_callback_fn)(nsftl_test_report_t* test_report, nsftl_index_t test_unit_index);
+};
 
+/**
+ * @typedef
+ * @author Diego Graziati
+ */
+typedef struct nsftl_test_unit nsftl_test_unit;
 /** }@ */
 
 /**
