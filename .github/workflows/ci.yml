@@ -16,9 +16,9 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            c_compiler: gcc
-            cpp_compiler: g++
+            use_docker: true
           - os: windows-latest
+            use_docker: false
             c_compiler: cl
             cpp_compiler: cl
 
@@ -26,20 +26,35 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: CMake Configuration (Development)
+  # -- LINUX DOCKER TESTS SETUP AND RUN --
+    - name: Run Tests inside Docker Container
+      if: matrix.use_docker == true
+      env:
+        ASAN_OPTIONS: 'halt_on_error=1:abort_on_error=1'
+      run: docker compose run --rm run-tests
+
+  # -- WINDOWS TESTS SETUP, BUILD AND RUN
+    - name: Set up MSVC Developer Command Prompt
+      if: matrix.use_docker == false
+      uses: ilammy/msvc-dev-cmd@1
+  
+    - name: CMake Configuration (Development - Windows)
+      if: matrix.use_docker == false
       run: >
         cmake -B ${{ github.workspace }}/build 
         -DCMAKE_BUILD_TYPE=Debug 
         -DBUILD_TESTING=ON 
-        -DENABLE_SANITIZERS=ON
+        -DENABLE_SANITIZERS=OFF
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
 
-    - name: Project Build
+    - name: Project Build (Windows)
+      if: matrix.use_docker == false
       run: cmake --build ${{ github.workspace }}/build --config Debug
 
     # Esecuzione dei test automatici tramite CTest
-    - name: Run CTest
+    - name: Run CTest (Windows)
+      if: matrix.use_docker == false
       working-directory: ${{ github.workspace }}/build
       env:
         ASAN_OPTIONS: 'halt_on_error=1:abort_on_error=1'
