@@ -36,7 +36,7 @@ jobs:
   # -- WINDOWS TESTS SETUP, BUILD AND RUN
     - name: Set up MSVC Developer Command Prompt
       if: matrix.use_docker == false
-      uses: ilammy/msvc-dev-cmd@1
+      uses: ilammy/msvc-dev-cmd@v1
   
     - name: CMake Configuration (Development - Windows)
       if: matrix.use_docker == false
@@ -57,5 +57,5 @@ jobs:
       if: matrix.use_docker == false
       working-directory: ${{ github.workspace }}/build
       env:
-        ASAN_OPTIONS: 'halt_on_error=1:abort_on_error=1'
+        ASAN_OPTIONS: 'halt_on_error=1;abort_on_error=1'
       run: ctest --output-on-failure -C Debug
